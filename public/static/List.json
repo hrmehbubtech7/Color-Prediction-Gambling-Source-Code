@@ -1,0 +1,73 @@
+{
+    "carousel":[
+        {
+          "src": "/img/carousel/1.png",
+          "altText": "Slide 1"
+        },
+        {
+          "src": "/img/carousel/2.png",
+          "altText": "Slide 2"
+        },
+        {
+          "src": "/img/carousel/3.png",
+          "altText": "Slide 3"
+        }
+      ],
+    "items":[{
+        "img":"/img/products/products (1).jpg",
+        "title":"Helix Analog Black Dial Women's Watch-TW029HL07",
+        "text":"₹ 80.00"
+      },{
+        "img":"/img/products/products (2).jpg",
+        "title":"Seiko Analog White Dial Men's Watch - SGEH78P1",
+        "text":"₹ 100.00"
+      },{
+        "img":"/img/products/products (3).jpg",
+        "title":"Seiko Analog Blue Dial Men's Watch - SPC238P1",
+        "text":"₹ 120.00"
+      },{
+        "img":"/img/products/products (4).jpg",
+        "title":"Unlisted by Kenneth Cole Analog Grey Dial Men's Watch-10032006",
+        "text":"₹ 115.00"
+      },{
+        "img":"/img/products/products (5).jpg",
+        "title":"Jacques lemans 1-1777F Men's Chronograph Watch",
+        "text":"₹ 1635.00"
+      },{
+        "img":"/img/products/products (6).jpg",
+        "title":"Fossil Gen 5 Carlyle Stainless Steel Touchscreen Smartwatch with Speaker, Heart Rate, GPS and Smartphone Notifications - FTW4024",
+        "text":"₹ 165.00"
+      },{
+        "img":"/img/products/products (7).jpg",
+        "title":"Giordano Analog Rose Gold Dial Women's Watch",
+        "text":"₹ 1635.00"
+      },{
+        "img":"/img/products/products (8).jpg",
+        "title":"Chumbak Analogue Black Dial Floral Palms Teal Women's Wrist Watch",
+        "text":"₹ 86.00"
+      },{
+        "img":"/img/products/products (9).jpg",
+        "title":"EDDY HAGER Analogue Men's Watch",
+        "text":"₹ 75.00"
+      },{
+        "img":"/img/products/products (10).jpg",
+        "title":"EDDY HAGER Time Teacher Black Dial Men's Watch",
+        "text":"₹ 69.00"
+      },{
+        "img":"/img/products/products (11).jpg",
+        "title":"Jacques Lemans Men's 1-1580D Dublin Classic Analog Chronograph with HighTech Ceramic and Sapphire Glass Watch",
+        "text":"₹ 110.00"
+      },{
+        "img":"/img/products/products (12).jpg",
+        "title":"Casio Protrek Analog-Digital Black Dial Men's Watch - PRG-650Y-1DR (SL100)",
+        "text":"₹ 123.00"
+      },{
+        "img":"/img/products/products (13).jpg",
+        "title":"Casio Digital Black Dial Men's Watch-GM-5600B-1DR (G993)",
+        "text":"₹ 150.00"
+      },{
+        "img":"/img/products/products (14).jpg",
+        "title":"Daniel Wellington Classic Glasgow & Winchester Couple Watch Combo",
+        "text":"₹ 55.00"
+      }]
+}

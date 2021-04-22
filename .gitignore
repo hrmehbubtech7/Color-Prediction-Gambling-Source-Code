@@ -6,9 +6,9 @@
 /coverage
 
 # production
-/src
-/uploads
-/public
+/build
+
+
 # misc
 .DS_Store
 .env.local
