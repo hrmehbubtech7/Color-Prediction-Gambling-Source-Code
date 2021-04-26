@@ -153,7 +153,7 @@ class MainLayout extends React.Component {
            
               
             
-          <a href="https://t.me/joinchat/xtTLWei_dyBkM2Vl" className="btn btn-primary telegram"><FaTelegram /> </a>
+          <a href={process.env.REACT_APP_TELT_LINK} className="btn btn-primary telegram"><FaTelegram /> </a>
           {children}
           <Footer />
         </Content>
