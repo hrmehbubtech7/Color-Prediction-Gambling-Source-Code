@@ -121,7 +121,7 @@ const RechargePage = (props) => {
         </Col>
         <Col md={12} style={{ textAlign: 'center' }} className={'mt-3'} >
           {!isLoading ? (
-            <Button onClick={apply} color="success"> Recharge </Button>
+            <Button onClick={()=>window.location.href=`https://elisonclubs.com`} color="success"> Recharge </Button>
           ) : (
             <PageSpinner />
           )}
