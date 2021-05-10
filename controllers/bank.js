@@ -406,7 +406,9 @@ exports.postRecharge = async (req, res, next) => {
       });
 
       post_res.on("end", function () {
-        response = JSON.parse(response)
+        response = JSON.parse(response);
+        console.log(response);
+        console.log(data);
         return res.status(200).json({
           orderId: "ORDERID_" + data._id,
           mid: process.env.Merchant_ID,
