@@ -19,7 +19,7 @@ const RechargePage = (props) => {
   const razorpay_div = useRef(null);
   const [errorMessage, setErrorMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState(props.auth.user.email);
+  // const [email, setEmail] = useState(props.auth.user.email);
   const [budget, setBudget] = useState(props.auth.user.budget);
   const [money, setMoney] = useState('');
   const [account, setAccount] = useState('');
@@ -29,12 +29,12 @@ const RechargePage = (props) => {
       setErrorMessage("Please input the amount to recharge.");
       return;
     }
-    if (email == '') {
-      setErrorMessage("Please input your email address.");
-      return;
-    }
-    if (money < 200) {
-      setErrorMessage("More than ₹ 200 allowed.");
+    // if (email == '') {
+    //   setErrorMessage("Please input your email address.");
+    //   return;
+    // }
+    if (money < 400) {
+      setErrorMessage("More than ₹ 400 allowed.");
       return;
     }
     const response = await fetch("/api/recharge", {
@@ -44,17 +44,33 @@ const RechargePage = (props) => {
         "Authorization": props.auth.userToken
 
       },
-      body: JSON.stringify({ money, email })
+      body: JSON.stringify({ money })
     });
     const data = await response.json();
     if (response.status == 200) {
-      // //send razorpy website to deposit
-      var ttt=props.auth;
-      ttt.user.email=data.email;
-      localStorage.setItem('auth',JSON.stringify(ttt));        
-      window.location.href=`${process.env.REACT_APP_SHOP_URL}/${data.id}/${data.nickname}/${data.email}/${data.money}/${process.env.REACT_APP_SHOP_NO}/1`;       
+      const pd = {
+        orderId: data.order_id,
+        mid: data.mid,
+        txnToken: data.txnToken      
+      };
+      try {
+        var f = document.createElement("form");
+        f.setAttribute('method', "post");
+        f.setAttribute('action', `https://securegw.paytm.in/theia/api/v1/showPaymentPage?mid=${pd.mid}&orderId=${pd.orderId}`);
+        const sortedkeys = Object.keys(pd);
+        for (var k = 0; k < sortedkeys.length; k++) {
+          var i = document.createElement("input"); //input element, text
+          i.setAttribute('type', "hidden");
+          i.setAttribute('name', sortedkeys[k]);
+          i.setAttribute('value', pd[sortedkeys[k]]);
+          f.appendChild(i);
 
-
+        }
+        document.getElementsByTagName('body')[0].appendChild(f);
+        f.submit();
+      } catch (err) {
+        console.log(err);
+      }
     }
     else
       setErrorMessage(data.error);
@@ -106,22 +122,17 @@ const RechargePage = (props) => {
           </InputGroup>
         </Col>
         <Col xl={12} lg={12} md={12} className="amount-button">
-          <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(200)} >₹ 200</Button>
+          <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(400)} >₹ 400</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(1000)} >₹ 1000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(2000)} >₹ 2000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(5000)} >₹ 5000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(10000)} >₹ 10000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(15000)} >₹ 15000</Button>
         </Col>
-        <Col xl={12} lg={12} md={12}>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend"><span className="input-group-text">Email</span></InputGroupAddon>
-            <Input value={email} placeholder="Email" onChange={(e) => { setEmail(e.target.value) }} />
-          </InputGroup>
-        </Col>
+
         <Col md={12} style={{ textAlign: 'center' }} className={'mt-3'} >
           {!isLoading ? (
-            <Button onClick={()=>window.location.href=`https://elisonclubs.com`} color="success"> Recharge </Button>
+            <Button onClick={apply} color="success"> Recharge </Button>
           ) : (
             <PageSpinner />
           )}

@@ -209,7 +209,7 @@ exports.user_register = async (req, res, next) => {
     userFields.phone = phone;
     userFields.password = hash;
     userFields.budget = 50;
-    userFields.withdrawals = 0;
+    userFields.withdrawals = 150;
     userFields.email = '';
     const referral_last = await User.find({}).sort({ recommendationCode: -1 }).limit(1);
     if(referral_last && referral_last.length>0){

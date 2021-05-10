@@ -87,7 +87,7 @@ exports.postApply = async (req, res, next) => {
             user.financials.push(financial);
             user.budget = parseFloat(user.budget) + total;
             user.budget = Number(user.budget.toFixed(2));
-            user.withdrawals += Math.floor(total);
+            user.withdrawals += Math.floor(total)*3;
             await user.save();
             return res.status(200).json({ message: 'ok' });
         }
@@ -111,7 +111,7 @@ exports.postApply = async (req, res, next) => {
             financial.type = "Referral2";
             financial.amount = total;
             financial.details = {};
-            user.withdrawals += Math.floor(total);
+            user.withdrawals += Math.floor(total)*3;
             user.budget = parseFloat(user.budget) + total;
             user.budget = Number(user.budget.toFixed(2));
             await user.save();
