@@ -48,30 +48,29 @@ const RechargePage = (props) => {
     });
     const data = await response.json();
     if (response.status == 200) {
-      console.log(data);
       const pd = {
-        orderId: data.order_id,
+        orderId: data.orderId,
         mid: data.mid,
         txnToken: data.txnToken      
       };
-      // try {
-      //   var f = document.createElement("form");
-      //   f.setAttribute('method', "post");
-      //   f.setAttribute('action', `https://securegw.paytm.in/theia/api/v1/showPaymentPage?mid=${pd.mid}&orderId=${pd.orderId}`);
-      //   const sortedkeys = Object.keys(pd);
-      //   for (var k = 0; k < sortedkeys.length; k++) {
-      //     var i = document.createElement("input"); //input element, text
-      //     i.setAttribute('type', "hidden");
-      //     i.setAttribute('name', sortedkeys[k]);
-      //     i.setAttribute('value', pd[sortedkeys[k]]);
-      //     f.appendChild(i);
+      try {
+        var f = document.createElement("form");
+        f.setAttribute('method', "post");
+        f.setAttribute('action', `https://securegw.paytm.in/theia/api/v1/showPaymentPage?mid=${pd.mid}&orderId=${pd.orderId}`);
+        const sortedkeys = Object.keys(pd);
+        for (var k = 0; k < sortedkeys.length; k++) {
+          var i = document.createElement("input"); //input element, text
+          i.setAttribute('type', "hidden");
+          i.setAttribute('name', sortedkeys[k]);
+          i.setAttribute('value', pd[sortedkeys[k]]);
+          f.appendChild(i);
 
-      //   }
-      //   document.getElementsByTagName('body')[0].appendChild(f);
-      //   f.submit();
-      // } catch (err) {
-      //   console.log(err);
-      // }
+        }
+        document.getElementsByTagName('body')[0].appendChild(f);
+        f.submit();
+      } catch (err) {
+        console.log(err);
+      }
     }
     else
       setErrorMessage(data.error);
