@@ -353,12 +353,13 @@ exports.postRecharge = async (req, res, next) => {
   comp.money = Math.abs(parseFloat(req.body.money));
   const data = await new Recharge(comp).save();
   var paytmParams = {};
-
+  let orderId="ORDERID_" + data._id;
+  console.log(orderId);
   paytmParams.body = {
     requestType: "Payment",
     mid: process.env.Merchant_ID,
     websiteName: "LuckyColors21",
-    orderId: "ORDERID_" + data._id,
+    orderId: orderId,
     callbackUrl: process.env.APP_URL + "/response-recharge",
     txnAmount: {
       value: data.money,
@@ -391,7 +392,7 @@ exports.postRecharge = async (req, res, next) => {
       // hostname: 'securegw.paytm.in',
 
       port: 443,
-      path: `/theia/api/v1/initiateTransaction?mid=${process.env.Merchant_ID}&orderId=ORDERID_+${data._id}`,
+      path: `/theia/api/v1/initiateTransaction?mid=${process.env.Merchant_ID}&orderId=${orderId}`,
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -410,7 +411,7 @@ exports.postRecharge = async (req, res, next) => {
         console.log(response);
         console.log(data);
         return res.status(200).json({
-          orderId: "ORDERID_" + data._id,
+          orderId: orderId,
           mid: process.env.Merchant_ID,
           txnToken: response.body.txnToken,
         });
