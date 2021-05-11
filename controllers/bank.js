@@ -6,6 +6,7 @@ const HHH = require("../models/HHH");
 const Bonus1 = require("../models/Bonus1");
 const jwt = require("jsonwebtoken");
 const https = require("https");
+const qs = require("querystring");
 /*
  * import checksum generation utility
  * You can get this utility from https://developer.paytm.com/docs/checksum/
@@ -353,7 +354,7 @@ exports.postRecharge = async (req, res, next) => {
   comp.money = Math.abs(parseFloat(req.body.money));
   const data = await new Recharge(comp).save();
   var paytmParams = {};
-  let orderId="ORDERID_" + data._id;
+  let orderId = "ORDERID_" + data._id;
   console.log(orderId);
   paytmParams.body = {
     requestType: "Payment",
@@ -380,7 +381,7 @@ exports.postRecharge = async (req, res, next) => {
   ).then(function (checksum) {
     paytmParams.head = {
       signature: checksum,
-      channelId:'WEB'
+      channelId: "WEB",
     };
 
     var post_data = JSON.stringify(paytmParams);
@@ -422,112 +423,119 @@ exports.postRecharge = async (req, res, next) => {
   });
 };
 exports.postResponseRecharge = async (req, res, next) => {
-  let data = req.body;
+  var body = "";
 
-  // data = JSON.parse(JSON.stringify(data))
+  req.on("data", function (data) {
+    body += data;
+  });
 
-  const paytmChecksum = data.CHECKSUMHASH;
+  req.on("end", function () {
+    var html = "";
+    var post_data = qs.parse(body);
+    var checksumhash = post_data.CHECKSUMHASH;
+    var data = JSON.parse(JSON.stringify(data));
 
-  var isVerifySignature = PaytmChecksum.verifySignature(
-    data,
-    process.env.Merchant_Key,
-    paytmChecksum
-  );
-  if (isVerifySignature) {
-    console.log("Checksum Matched");
+    var isVerifySignature = PaytmChecksum.verifySignature(
+      data,
+      process.env.Merchant_Key,
+      checksumhash
+    );
+    if (isVerifySignature) {
+      console.log("Checksum Matched");
 
-    var paytmParams = {};
+      var paytmParams = {};
 
-    paytmParams.body = {
-      mid: process.env.Merchant_ID,
-      orderId: data.ORDERID,
-    };
-
-    PaytmChecksum.generateSignature(
-      JSON.stringify(paytmParams.body),
-      process.env.Merchant_Key
-    ).then(function (checksum) {
-      paytmParams.head = {
-        signature: checksum,
+      paytmParams.body = {
+        mid: process.env.Merchant_ID,
+        orderId: data.ORDERID,
       };
 
-      var post_data = JSON.stringify(paytmParams);
+      PaytmChecksum.generateSignature(
+        JSON.stringify(paytmParams.body),
+        process.env.Merchant_Key
+      ).then(function (checksum) {
+        paytmParams.head = {
+          signature: checksum,
+        };
 
-      var options = {
-        /* for Staging */
-        // hostname: 'securegw-stage.paytm.in',
+        post_data = JSON.stringify(paytmParams);
 
-        /* for Production */
-        hostname: "securegw.paytm.in",
+        var options = {
+          /* for Staging */
+          // hostname: 'securegw-stage.paytm.in',
 
-        port: 443,
-        path: "/v3/order/status",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": post_data.length,
-        },
-      };
+          /* for Production */
+          hostname: "securegw.paytm.in",
 
-      // Set up the request
-      var response = "";
-      var post_req = https.request(options, function (post_res) {
-        post_res.on("data", function (chunk) {
-          response += chunk;
-        });
+          port: 443,
+          path: "/v3/order/status",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Content-Length": post_data.length,
+          },
+        };
 
-        post_res.on("end", async function () {
-          console.log("Response: ", response);
-          const recharge = await Recharge.findById(
-            data.ORDERID.substr(8)
-          ).catch((err) => {
-            console.log("recharging failed");
+        // Set up the request
+        var response = "";
+        var post_req = https.request(options, function (post_res) {
+          post_res.on("data", function (chunk) {
+            response += chunk;
+          });
+
+          post_res.on("end", async function () {
+            console.log("Response: ", response);
+            const recharge = await Recharge.findById(
+              data.ORDERID.substr(8)
+            ).catch((err) => {
+              console.log("recharging failed");
+              return res.redirect("/wallet");
+            });
+            if (recharge.status == 0) {
+              const recharged = await Recharge.countDocuments({
+                user: recharge.user,
+                status: 1,
+              });
+              const user = await User.findById(recharge.user);
+              if (recharged == 0) {
+                if (user.refer1) {
+                  const tmp1 = {};
+                  tmp1.better = user._id;
+                  tmp1.money = 130;
+                  tmp1.receiver = user.refer1;
+                  await new Bonus1(tmp1).save();
+                }
+              }
+              recharge.status = 1;
+              recharge.money = data.TXNAMOUNT;
+              recharge.orderID = data.BANKTXNID;
+              await recharge.save();
+
+              user.budget += recharge.money;
+              user.withdrawals += recharge.money;
+              //
+
+              const financial = {};
+              financial.type = "Recharge";
+              financial.amount = parseInt(recharge.money);
+              financial.details = {};
+              financial.details.orderID = recharge.orderID;
+              user.financials.push(financial);
+              await user.save();
+            }
             return res.redirect("/wallet");
           });
-          if (recharge.status == 0) {
-            const recharged = await Recharge.countDocuments({
-              user: recharge.user,
-              status: 1,
-            });
-            const user = await User.findById(recharge.user);
-            if (recharged == 0) {
-              if (user.refer1) {
-                const tmp1 = {};
-                tmp1.better = user._id;
-                tmp1.money = 130;
-                tmp1.receiver = user.refer1;
-                await new Bonus1(tmp1).save();
-              }
-            }
-            recharge.status = 1;
-            recharge.money = data.TXNAMOUNT;
-            recharge.orderID=data.BANKTXNID;
-            await recharge.save();
-
-            user.budget += recharge.money;
-            user.withdrawals += recharge.money;
-            //
-
-            const financial = {};
-            financial.type = "Recharge";
-            financial.amount = parseInt(recharge.money);
-            financial.details = {};
-            financial.details.orderID = recharge.orderID;
-            user.financials.push(financial);
-            await user.save();
-          }
-          return res.redirect("/wallet");
         });
-      });
 
-      // post the data
-      post_req.write(post_data);
-      post_req.end();
-    });
-  } else {
-    console.log("Checksum Mismatched");
-    return res.redirect("/wallet");
-  }
+        // post the data
+        post_req.write(post_data);
+        post_req.end();
+      });
+    } else {
+      console.log("Checksum Mismatched");
+      return res.redirect("/wallet");
+    }
+  });
 };
 exports.postNotifyRecharge = async (req, res, next) => {
   return res.redirect("/wallet");
