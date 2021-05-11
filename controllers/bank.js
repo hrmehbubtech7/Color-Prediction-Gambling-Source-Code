@@ -358,9 +358,9 @@ exports.postRecharge = async (req, res, next) => {
   paytmParams.body = {
     requestType: "Payment",
     mid: process.env.Merchant_ID,
-    websiteName: "LuckyColors21",
+    websiteName: "DEFAULT",
     orderId: orderId,
-    callbackUrl: process.env.APP_URL + "/response-recharge",
+    callbackUrl: process.env.APP_URL + "/api/response-recharge",
     txnAmount: {
       value: data.money,
       currency: "INR",
@@ -380,6 +380,7 @@ exports.postRecharge = async (req, res, next) => {
   ).then(function (checksum) {
     paytmParams.head = {
       signature: checksum,
+      channelId:'WEB'
     };
 
     var post_data = JSON.stringify(paytmParams);
