@@ -355,7 +355,6 @@ exports.postRecharge = async (req, res, next) => {
   const data = await new Recharge(comp).save();
   var paytmParams = {};
   let orderId = "ORDERID_" + data._id;
-  console.log(orderId);
   paytmParams.body = {
     requestType: "Payment",
     mid: process.env.Merchant_ID,
@@ -424,7 +423,7 @@ exports.postRecharge = async (req, res, next) => {
 };
 exports.postResponseRecharge = async (req, res, next) => {
   var body = "";
-
+  console.log('response recharge');
   req.on("data", function (data) {
     body += data;
   });
