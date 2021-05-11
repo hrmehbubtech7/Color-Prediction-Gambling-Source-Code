@@ -434,7 +434,7 @@ exports.postResponseRecharge = async (req, res, next) => {
     var post_data = qs.parse(body);
     var checksumhash = post_data.CHECKSUMHASH;
     var data = JSON.parse(JSON.stringify(data));
-
+    console.log(data);
     var isVerifySignature = PaytmChecksum.verifySignature(
       data,
       process.env.Merchant_Key,
@@ -454,6 +454,7 @@ exports.postResponseRecharge = async (req, res, next) => {
         JSON.stringify(paytmParams.body),
         process.env.Merchant_Key
       ).then(function (checksum) {
+        console.log(checksum);
         paytmParams.head = {
           signature: checksum,
         };
