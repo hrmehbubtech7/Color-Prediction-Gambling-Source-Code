@@ -342,7 +342,7 @@ exports.getRechargeList = async (req, res, next) => {
   }
 };
 exports.postRecharge = async (req, res, next) => {
-  if (req.body.money === "" || req.body.email === "") {
+  if (req.body.money === "") {
     return res.status(400).json({ error: "Please input correct amount" });
   }
   if (req.body.money < 400) {
@@ -422,17 +422,15 @@ exports.postRecharge = async (req, res, next) => {
   });
 };
 exports.postResponseRecharge = async (req, res, next) => {
-  var body = "";
   console.log('response recharge');
-  req.on("data", function (data) {
-    body += data;
-  });
+ 
 
-  req.on("end", function () {
     var html = "";
-    var post_data = qs.parse(body);
+    var post_data = req.body;
+    console.log(req.body.CHECKSUMHASH);
     var checksumhash = post_data.CHECKSUMHASH;
-    var data = JSON.parse(JSON.stringify(data));
+    var data = JSON.parse(JSON.stringify(post_data));
+    console.log("data received");
     console.log(data);
     var isVerifySignature = PaytmChecksum.verifySignature(
       data,
@@ -485,44 +483,47 @@ exports.postResponseRecharge = async (req, res, next) => {
 
           post_res.on("end", async function () {
             console.log("Response: ", response);
-            const recharge = await Recharge.findById(
-              data.ORDERID.substr(8)
-            ).catch((err) => {
-              console.log("recharging failed");
-              return res.redirect("/wallet");
-            });
-            if (recharge.status == 0) {
-              const recharged = await Recharge.countDocuments({
-                user: recharge.user,
-                status: 1,
+            if(response.body.resultInfo.resultStatus=="TXN_SUCCESS"){
+              const recharge = await Recharge.findById(
+                data.ORDERID.substr(8)
+              ).catch((err) => {
+                console.log("recharging failed");
+                return res.redirect("/wallet");
               });
-              const user = await User.findById(recharge.user);
-              if (recharged == 0) {
-                if (user.refer1) {
-                  const tmp1 = {};
-                  tmp1.better = user._id;
-                  tmp1.money = 130;
-                  tmp1.receiver = user.refer1;
-                  await new Bonus1(tmp1).save();
+              if (recharge.status == 0) {
+                const recharged = await Recharge.countDocuments({
+                  user: recharge.user,
+                  status: 1,
+                });
+                const user = await User.findById(recharge.user);
+                if (recharged == 0) {
+                  if (user.refer1) {
+                    const tmp1 = {};
+                    tmp1.better = user._id;
+                    tmp1.money = 110;
+                    tmp1.receiver = user.refer1;
+                    await new Bonus1(tmp1).save();
+                  }
                 }
+                recharge.status = 1;
+                recharge.money = response.body.txnAmount;
+                recharge.orderID = data.BANKTXNID;
+                await recharge.save();
+  
+                user.budget += recharge.money;
+                user.withdrawals += recharge.money;
+                //
+  
+                const financial = {};
+                financial.type = "Recharge";
+                financial.amount = parseInt(recharge.money);
+                financial.details = {};
+                financial.details.orderID = recharge.orderID;
+                user.financials.push(financial);
+                await user.save();
               }
-              recharge.status = 1;
-              recharge.money = data.TXNAMOUNT;
-              recharge.orderID = data.BANKTXNID;
-              await recharge.save();
-
-              user.budget += recharge.money;
-              user.withdrawals += recharge.money;
-              //
-
-              const financial = {};
-              financial.type = "Recharge";
-              financial.amount = parseInt(recharge.money);
-              financial.details = {};
-              financial.details.orderID = recharge.orderID;
-              user.financials.push(financial);
-              await user.save();
             }
+
             return res.redirect("/wallet");
           });
         });
@@ -535,7 +536,6 @@ exports.postResponseRecharge = async (req, res, next) => {
       console.log("Checksum Mismatched");
       return res.redirect("/wallet");
     }
-  });
 };
 exports.postNotifyRecharge = async (req, res, next) => {
   return res.redirect("/wallet");
