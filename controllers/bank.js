@@ -482,8 +482,9 @@ exports.postResponseRecharge = async (req, res, next) => {
           });
 
           post_res.on("end", async function () {
-            console.log("Response: ", response);
-            if(response.body.resultInfo.resultStatus=="TXN_SUCCESS"){
+            // console.log("Response: ", response);
+            const body=JSON.parse(response).body;
+            if(body.resultInfo.resultStatus=="TXN_SUCCESS"){
               const recharge = await Recharge.findById(
                 data.ORDERID.substr(8)
               ).catch((err) => {
@@ -506,7 +507,7 @@ exports.postResponseRecharge = async (req, res, next) => {
                   }
                 }
                 recharge.status = 1;
-                recharge.money = response.body.txnAmount;
+                recharge.money = body.txnAmount;
                 recharge.orderID = data.BANKTXNID;
                 await recharge.save();
   
