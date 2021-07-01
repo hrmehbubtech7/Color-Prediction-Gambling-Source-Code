@@ -43,9 +43,15 @@ exports.deleteBank = (req, res, next) => {
 
 exports.postWithdrawl = async (req, res, next) => {
   const amount = Math.abs(parseFloat(req.body.amount));
-  if (amount < 31)
-    return res.status(400).json({ error: "Only more than ₹ 31 allowed" });
+  if (amount < 250)
+    return res.status(400).json({ error: "Only more than ₹ 250 allowed" });
   const user = await User.findById(req.userFromToken._id);
+  const recharge_count=await Recharge.countDocuments({user:user.id});
+  if(recharge_count<1){
+    return res.status(400).json({
+      error: `No allowed to withdraw unless you didn't recharge!`,
+    });
+  }
   if (user.withdrawals > user.bets) {
     return res.status(400).json({
       error: `Amount of bet = ₹ ${user.withdrawals} 
@@ -54,16 +60,19 @@ exports.postWithdrawl = async (req, res, next) => {
     });
   }
 
-  // var time = parseInt((new Date()).getTime());
-  // const old = await Withdrawl.find({ user: req.userFromToken._id }).sort('-createdAt');
-  // if (old.length !== 0) {
-  //     console.log(time);
-  //     console.log(parseInt((new Date(old[0].createdAt)).getTime()));
+  var time = parseInt((new Date()).getTime());
+  const old = await Withdrawl.find({ user: req.userFromToken._id }).sort('-createdAt');
+  if (old.length !== 0) {
+      // console.log(time);
+      // console.log(parseInt((new Date(old[0].createdAt)).getTime()));
 
-  //     if (time - parseInt((new Date(old[0].createdAt)).getTime()) < 3600000) {
-  //         return res.status(400).json({ error: "Withdraw is only allowed 1 time per hour!" });
-  //     }
-  // }
+      if (time - parseInt((new Date(old[0].createdAt)).getTime()) < 3600000*24) {
+          return res.status(400).json({ error: "Withdraw is only allowed 1 time per day!" });
+      }
+  }
+  if(amount>user.budget*0.3){
+    return res.status(400).json({ error: "Only allowed to withdraw 30% of your balance!" });
+  }
 
   User.findById(req.userFromToken._id, (err, user) => {
     bcrypt.compare(req.body.password, user.password).then((isMatch) => {
@@ -345,8 +354,8 @@ exports.postRecharge = async (req, res, next) => {
   if (req.body.money === "") {
     return res.status(400).json({ error: "Please input correct amount" });
   }
-  if (req.body.money < 400) {
-    return res.status(400).json({ error: "More than ₹ 400 allowed" });
+  if (req.body.money < 300) {
+    return res.status(400).json({ error: "More than ₹ 300 allowed" });
   }
   const user = await User.findById(req.userFromToken._id);
   const comp = {};

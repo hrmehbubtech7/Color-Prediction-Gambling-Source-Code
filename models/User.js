@@ -57,7 +57,7 @@ const UserSchema = new Schema({
   budget:
   {
     type: Number,
-    default: 0,
+    default: 50,
     required: true
   },
   refer2: {
@@ -82,7 +82,7 @@ const UserSchema = new Schema({
   },
   withdrawals:{
     type:Number,
-    default:0
+    default:150
   },
   bets:{
     type:Number,

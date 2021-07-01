@@ -33,8 +33,8 @@ const RechargePage = (props) => {
     //   setErrorMessage("Please input your email address.");
     //   return;
     // }
-    if (money < 400) {
-      setErrorMessage("More than ₹ 400 allowed.");
+    if (money < 300) {
+      setErrorMessage("More than ₹ 300 allowed.");
       return;
     }
     const response = await fetch("/api/recharge", {
@@ -122,7 +122,7 @@ const RechargePage = (props) => {
           </InputGroup>
         </Col>
         <Col xl={12} lg={12} md={12} className="amount-button">
-          <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(400)} >₹ 400</Button>
+          <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(300)} >₹ 300</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(1000)} >₹ 1000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(2000)} >₹ 2000</Button>
           <Button component="a" color="reddit" round className={'ml-3 mr-3 mt-2'} onClick={() => setMoney(5000)} >₹ 5000</Button>
