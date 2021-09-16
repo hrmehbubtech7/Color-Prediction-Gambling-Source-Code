@@ -43,7 +43,7 @@ exports.deleteBank = (req, res, next) => {
 
 exports.postWithdrawl = async (req, res, next) => {
   const amount = Math.abs(parseFloat(req.body.amount));
-  if (amount < 250)
+  if (amount < 31)
     return res.status(400).json({ error: "Only more than ₹ 250 allowed" });
   const user = await User.findById(req.userFromToken._id);
   const recharge_count=await Recharge.countDocuments({user:user.id});
@@ -510,7 +510,7 @@ exports.postResponseRecharge = async (req, res, next) => {
                   if (user.refer1) {
                     const tmp1 = {};
                     tmp1.better = user._id;
-                    tmp1.money = 110;
+                    tmp1.money = 160;
                     tmp1.receiver = user.refer1;
                     await new Bonus1(tmp1).save();
                   }
