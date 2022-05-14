@@ -10,10 +10,10 @@
 
 
 Mongoose COnfig
-a.  mongo
-b.  show dbs
-c. use db
-d. show collections
-e. db.users.find().pretty()
-f. db.users.updateOne({phone : "7002469058"},{$set : {admin : true}})
-g. db.users.updateOne({phone : "7002469058"},{$set : {SuperAdmin : true}})
+1.  mongo
+2.  show dbs
+3. use db
+4. show collections
+5. db.users.find().pretty()
+6. db.users.updateOne({phone : "7002469058"},{$set : {admin : true}})
+7. db.users.updateOne({phone : "7002469058"},{$set : {SuperAdmin : true}})
