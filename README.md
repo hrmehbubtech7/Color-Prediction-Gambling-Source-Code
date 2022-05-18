@@ -17,3 +17,8 @@ Mongoose COnfig
 5. db.users.find().pretty()
 6. db.users.updateOne({phone : "7002469058"},{$set : {admin : true}})
 7. db.users.updateOne({phone : "7002469058"},{$set : {SuperAdmin : true}})
+
+
+Port 80 forward to port 7777
+sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 7777
+
