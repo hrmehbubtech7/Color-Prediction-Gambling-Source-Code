@@ -20,5 +20,9 @@ Mongoose COnfig
 
 
 Port 80 forward to port 7777
+
+
+
+
 sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 7777
 
