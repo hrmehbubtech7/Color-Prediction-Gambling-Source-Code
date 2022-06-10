@@ -1,12 +1,20 @@
 # luckcolor
 1. Change .Env file Info
 2. Change logo files
-3. cd /var
-4. git clone https://github.com/hrmehbubtech7/luckcolor.git
-5. cd luckcolor
-6. npm install
-7. npm install pm2 -g
-8. pm2 start server.js
+3. apt install nginx
+4. cd /var
+
+5. git clone https://github.com/hrmehbubtech7/Royal.git
+6. cd Royal
+
+7. apt install npm
+8. npm install pm2 -g
+9. pm2 start server.js
+10. sudo nano etc/nginx/sites-available/default
+11. change domain
+12. sudo ufw allow 'Nginx Full'
+13. apt install mongodb
+14. npm run build
 
 
 Mongoose COnfig
