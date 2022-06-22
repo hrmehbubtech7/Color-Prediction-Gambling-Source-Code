@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Authentication api",
   "main": "server.js",
-  "author": "Mostafa Shawki",
+  "author": "HR Mehbubtech",
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^15.0.3",
