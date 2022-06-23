@@ -19,7 +19,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 app.use(helmet());
 app.use(cors());
-const port = 7778;
+const port = 7777;
 const user = require("./routes/user");
 // Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
