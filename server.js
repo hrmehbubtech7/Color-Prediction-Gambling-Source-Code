@@ -15,8 +15,8 @@ const app = express();
 // const db = {};
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useUnifiedTopology', true);
+mongoose.set('useCreateIndex'rue);
+mongoose.set('useUnifiedTopology', rue);
 app.use(helmet());
 app.use(cors());
 const port = 7777;
@@ -25,8 +25,8 @@ const user = require("./routes/user");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // app.use(morgan('combined', { stream: winston.stream }));
-// *** config file *** //
-const db = require("./dbConfig").mongoURI[app.settings.env];
+
+const db = require(oURI[app.settings.env];
 
 // Connect to MongoDB
 mongoose
