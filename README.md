@@ -5,8 +5,17 @@ to buy Source Code Contact on whatsapp
 
 Price: 40000 INR
 
+Screenshots: 
+
+![1](https://user-images.githubusercontent.com/69120293/217203726-e7fbb2c0-d36e-4112-91c1-424c8cf0aefb.JPG)
+![2](https://user-images.githubusercontent.com/69120293/217203736-00e8b9d2-9e20-492f-8984-949c766186f2.JPG)
+![3](https://user-images.githubusercontent.com/69120293/217203738-d02e864c-ba3d-4577-bc9b-c28906d19166.JPG)
+
+
+
 1. Introduction
 The main objective of the web application is making money. This is lottery website. You can make it on your own.
+
 
 2. System Actors
 Super Admin
