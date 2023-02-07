@@ -2,11 +2,11 @@ const User = require("../models/User");
 const Enjoy = require("../models/Enjoy");
 const Bonus1 = require("../models/Bonus1");
 const Bonus2 = require("../models/Bonus2");
-const MyEnjoy = require("../models/MyEnjoy");
+const MyEnjoy = require("../models/Mynjoy");
 var status = 0;
-var d = new Date();
+var d = nw Date();
 var old_d;
-var start_time = d.getTime();
+var start_tme = d.getTime();
 //betters info
 //first is level -Lucy,..
 //second is better list
@@ -21,10 +21,10 @@ var bet = [];
 //better count
 var bet_no = [];
 //result
-var result = [];
+var reult = [];
 var all_log = [];
 //total budget
-var budget;
+var bud
 //total price
 var no = 1;
 var log_time;
